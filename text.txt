@@ -1,0 +1,63 @@
+import express from "express";
+import axios from "axios";
+
+const port = 3000;
+const app = express();
+const link = "http://api.openweathermap.org";
+const key = "35ac71e35e8cd46ebc1c004d6454bef1";
+
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+
+app.get("/", async (req, res) => {
+    try {
+        const zipCode = req.query.zipCode;
+        const countryCode = req.query.countryCode;
+
+        // If no zip or country code is provided, render only the form
+        if (!zipCode || !countryCode) {
+            return res.render("index", { error: null, weather: null, temp: null, humid: null, condi: null });
+        }
+
+        // Fetch latitude and longitude using OpenWeatherMap API
+        const geoResponse = await axios.get(`${link}/geo/1.0/zip`, {
+            params: {
+                zip: `${zipCode},${countryCode}`,
+                appid: key
+            }
+        });
+
+        if (!geoResponse.data || !geoResponse.data.lat || !geoResponse.data.lon) {
+            throw new Error("Invalid location. Please enter a valid ZIP code and country code.");
+        }
+
+        const lat = geoResponse.data.lat;
+        const lon = geoResponse.data.lon;
+
+        // Fetch weather data using lat/lon
+        const weatherResponse = await axios.get(`${link}/data/2.5/weather`, {
+            params: {
+                lat: lat,
+                lon: lon,
+                appid: key,
+                units: "metric"
+            }
+        });
+
+        res.render("index", {
+            weather: weatherResponse.data,
+            temp: weatherResponse.data.main.temp,
+            humid: weatherResponse.data.main.humidity,
+            condi: weatherResponse.data.weather[0].description,
+            error: null
+        });
+
+    } catch (error) {
+        console.error("Error fetching data:", error.response?.data || error.message);
+        res.render("index", { error: "Failed to fetch weather data. Please check your inputs and API key.", weather: null, temp: null, humid: null, condi: null });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is listening on port ${port}`);
+});

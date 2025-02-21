@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Weather Forecast</h1>
+
+        <!-- Input Form -->
+        <form action="/" method="GET">
+            <label for="zipCode">Enter Pincode:</label>
+            <input type="text" id="zipCode" name="zipCode" placeholder="e.g. 94040" required>
+
+            <label for="countryCode">Enter Country Code:</label>
+            <input type="text" id="countryCode" name="countryCode" placeholder="e.g. US" required>
+
+            <button type="submit">Get Weather</button>
+        </form>
+
+        <!-- Error Handling -->
+        <% if (error) { %>
+            <div class="error">
+                <p style="color: red;"><strong>Error:</strong> <%= error %></p>
+            </div>
+        <% } %>
+
+        <!-- Weather Result -->
+        <% if (weather) { %>
+            <div class="weather-result">
+                <h2>Weather Details for <%= location %></h2>
+                <p><strong>Temperature:</strong> <%= temp %>°C</p>
+                <p><strong>Humidity:</strong> <%= humid %>%</p>
+                <p><strong>Condition:</strong> <%= condi %></p>
+            </div>
+        <% } %>
+    </div>
+</body>
+</html>
