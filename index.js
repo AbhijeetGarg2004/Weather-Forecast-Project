@@ -4,7 +4,6 @@ import axios from "axios";
 const port = 3000;
 const app = express();
 const link = "http://api.openweathermap.org";
-const key = "35ac71e35e8cd46ebc1c004d6454bef1";
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -18,7 +17,7 @@ app.get("/", async (req, res) => {
             return res.render("index", { error: null, weather: null, temp: null, humid: null, condi: null });
         }
         
-        const response = await axios.get(link + `/geo/1.0/zip?zip=${zipCode},${countryCode}&appid=${key}`);
+        const response = await axios.get(link + `/geo/1.0/zip?zip=${zipCode},${countryCode}&appid=${key}`); //write your own key here
 
         if (!response.data || !response.data.lat || !response.data.lon) {
             throw new Error("Invalid location. Please enter a valid ZIP code and country code.");
