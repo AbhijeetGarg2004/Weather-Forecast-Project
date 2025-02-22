@@ -4,6 +4,7 @@ import axios from "axios";
 const port = 3000;
 const app = express();
 const link = "http://api.openweathermap.org";
+const key = "35ac71e35e8cd46ebc1c004d6454bef1";
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
